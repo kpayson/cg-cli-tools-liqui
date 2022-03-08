@@ -26,7 +26,16 @@ inputs:
     description: "CF CLI subcommand to run. Mutually exclusive with 'command:'."
     required: false
   command:
-    description: "Command to run. Mutually exclusive with 'cf_command:'."
+    description: "Command to run. Mutually exclusive with other commands"
+    required: false
+  flyway_docker_command:
+    description: "Runs flyway by using already deployed app (deploy_app_from_config_command).  Mutually exclusive with other commands"
+    required: false
+  deploy_app_from_config_command:
+    description: "Deploys app in stopped state. The app could be used to run jobs. Mutually exclusive with other commands"
+    required: false
+  service_command: 
+    description: "Deploys service and waits for service to complete. Mutually exclusive with other commands"
     required: false
 runs:
   using: "docker"
