@@ -126,24 +126,24 @@ cf api "$CF_API"
 cf auth "$INPUT_CF_USERNAME" "$INPUT_CF_PASSWORD"
 cf target -o "$INPUT_CF_ORG" -s "$INPUT_CF_SPACE"
 
-if [[ -n "$FLYWAY_DOCKER_COMMAND" ]]; then
-  echo "Running command: $FLYWAY_DOCKER_COMMAND"
+if [[ -n "$INPUT_FLYWAY_DOCKER_COMMAND" ]]; then
+  echo "Running command: $INPUT_FLYWAY_DOCKER_COMMAND"
   
-  flyway_migrate "$FLYWAY_DOCKER_COMMAND"
+  flyway_migrate "$INPUT_FLYWAY_DOCKER_COMMAND"
   
   exit
 fi
 
-if [[ -n "$DEPLOY_APP_FROM_CONFIG_COMMAND" ]]; then
-  echo "Running command: $DEPLOY_APP_FROM_CONFIG_COMMAND"
-  deploy_app_from_config "$DEPLOY_APP_FROM_CONFIG_COMMAND" 
+if [[ -n "$INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND" ]]; then
+  echo "Running command: $INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND"
+  deploy_app_from_config "$INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND" 
   exit
 fi
 
-if [[ -n "$SERVICE_COMMAND" ]]; then
-  echo "Running command: $SERVICE_COMMAND"
+if [[ -n "$INPUT_SERVICE_COMMAND" ]]; then
+  echo "Running command: $INPUT_SERVICE_COMMAND"
   CF_SERVICE_INSTANCE=""
-  create_service "$SERVICE_COMMAND"
+  create_service "$INPUT_SERVICE_COMMAND"
   wait_for_service "$CF_SERVICE_INSTANCE"
   exit
 fi
