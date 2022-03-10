@@ -84,7 +84,10 @@ create_service() {
     $CF_SERVICE_INSTANCE \
     -c "$CF_SERVICE_CONFIG" 2>&1)   
 
-	echo >&2 "The error $err"
+	if [ "$err" != *"is taken"* ] && [ "$err" == *"FAILED"* ]; then
+		echo >&2 "Error: [$err]"
+  		exit 1
+	fi
 
 	echo $CF_SERVICE_INSTANCE
 }
@@ -95,7 +98,7 @@ deploy_app_from_config() {
 	
 	eval $(parse_yaml "./$CONFIG_FILE_NAME" "flyway_config")
 
-	CF_DOCKER_PASSWORD=$DOCKER_PASSWORD cf push --no-start  -f ./${CONFIG_FILE_NAME}
+	CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start  -f ./${CONFIG_FILE_NAME}
 	local PACKAGE_GUID=$(cf packages $APP_NAME | awk -F " " 'NR==4 {print $1}') 
 	cf stage $APP_NAME  --package-guid $PACKAGE_GUID 
 	local DROPLET_GUID=$(cf droplets $APP_NAME | awk -F " " 'NR==4 {print $1}') 

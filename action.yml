@@ -10,6 +10,9 @@ inputs:
   cf_password:
     description: "Password for API authentication"
     required: true
+  cf_docker_password:
+    description: "Password for Docker registry authentication"
+    required: false
   cf_org:
     description: "Target organization"
     required: true
