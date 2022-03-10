@@ -79,10 +79,12 @@ create_service() {
 
 	echo >&2 "$CF_SERVICE_CONFIG"
 
-	cf create-service  $CF_SERVICE \
+	local err=$(cf create-service  $CF_SERVICE \
     $CF_SERVICE_PLAN \
     $CF_SERVICE_INSTANCE \
-    -c "$CF_SERVICE_CONFIG"   
+    -c "$CF_SERVICE_CONFIG" 2>&1)   
+
+	echo >&2 "The error $err"
 
 	echo $CF_SERVICE_INSTANCE
 }
