@@ -112,6 +112,8 @@ flyway_migrate() {
   local CF_SERVICE=$(jq -r '.service_instance' <<< $1)
   echo 2>&1 "$CF_SERVICE"
 
+  cf install-plugin https://github.com/AlexF4Dev/cf-run-and-wait/releases/download/0.3/cf-run-and-wait_0.3_linux_amd64 -f
+
   FLYWAY_ENTRY_COMMAND='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
   FLYWAY_ENTRY_COMMAND+=$CF_SERVICE
   FLYWAY_ENTRY_COMMAND+='\") | .credentials") && \
