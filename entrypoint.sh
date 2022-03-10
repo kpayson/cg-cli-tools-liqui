@@ -131,13 +131,13 @@ if [[ -n "$INPUT_FLYWAY_DOCKER_COMMAND" ]]; then
   
   flyway_migrate "$INPUT_FLYWAY_DOCKER_COMMAND"
   
-  exit
+  exit 0
 fi
 
 if [[ -n "$INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND" ]]; then
   echo "Running command: $INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND"
   deploy_app_from_config "$INPUT_DEPLOY_APP_FROM_CONFIG_COMMAND" 
-  exit
+  exit 0
 fi
 
 if [[ -n "$INPUT_SERVICE_COMMAND" ]]; then
@@ -145,7 +145,7 @@ if [[ -n "$INPUT_SERVICE_COMMAND" ]]; then
   CF_SERVICE_INSTANCE=""
   create_service "$INPUT_SERVICE_COMMAND"
   wait_for_service "$CF_SERVICE_INSTANCE"
-  exit
+  exit 0
 fi
 
 
