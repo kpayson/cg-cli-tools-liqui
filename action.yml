@@ -40,6 +40,9 @@ inputs:
   service_command: 
     description: "Deploys service and waits for service to complete. Mutually exclusive with other commands"
     required: false
+  database_name: 
+    description: "Database to be used by flyway job"
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"

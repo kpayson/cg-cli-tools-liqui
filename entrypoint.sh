@@ -114,7 +114,8 @@ flyway_migrate() {
 
   cf install-plugin https://github.com/AlexF4Dev/cf-run-and-wait/releases/download/0.3/cf-run-and-wait_0.3_linux_amd64 -f
 
-  FLYWAY_ENTRY_COMMAND='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
+  FLYWAY_ENTRY_COMMAND="sed -i 's/labshare/${INPUT_DATABASE_NAME:=labshare}/g' /flyway/conf/flyway.conf && "
+  FLYWAY_ENTRY_COMMAND+='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
   FLYWAY_ENTRY_COMMAND+=$CF_SERVICE
   FLYWAY_ENTRY_COMMAND+='\") | .credentials") && \
 export DB_HOST=$(echo $credentials | jq -r ".host") && \
