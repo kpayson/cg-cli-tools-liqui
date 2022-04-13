@@ -98,7 +98,15 @@ deploy_app_from_config() {
 	
 	eval $(parse_yaml "./$CONFIG_FILE_NAME" "flyway_config")
 
-	CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start  -f ./${CONFIG_FILE_NAME}
+	# If they specified a vars file, use it  
+	if [[ -r "$INPUT_CF_VARS_FILE" ]]; then 
+	  echo "Pushing with vars file: $INPUT_CF_VARS_FILE"
+	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start --vars-file "$INPUT_CF_VARS_FILE" -f ./${CONFIG_FILE_NAME}
+	else 
+	  echo "Pushing with manifest file: $MANIFEST"
+	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start  -f ./${CONFIG_FILE_NAME}
+	fi
+	
 	local PACKAGE_GUID=$(cf packages $APP_NAME | awk -F " " 'NR==4 {print $1}') 
 	cf stage $APP_NAME  --package-guid $PACKAGE_GUID 
 	local DROPLET_GUID=$(cf droplets $APP_NAME | awk -F " " 'NR==4 {print $1}') 
