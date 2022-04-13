@@ -94,7 +94,7 @@ create_service() {
 
 deploy_app_from_config() {
 	local CONFIG_FILE_NAME=$1
-	local APP_NAME=$(yq -o=json  ${CONFIG_FILE_NAME} | jq -r ".applications[0].name")
+	local APP_NAME=$(yq -o=json  ${INPUT_CF_VARS_FILE} | jq -r ".APP_NAME")
 	
 	eval $(parse_yaml "./$CONFIG_FILE_NAME" "flyway_config")
 
