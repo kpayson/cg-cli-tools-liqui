@@ -40,6 +40,12 @@ inputs:
   service_command: 
     description: "Deploys service and waits for service to complete. Mutually exclusive with other commands"
     required: false
+  user_service_command: 
+    description: "Deploys user service from the file"
+    required: false
+  user_service_name: 
+    description: "Name of the users service"
+    required: false    
   database_name: 
     description: "Database to be used by flyway job"
     required: false

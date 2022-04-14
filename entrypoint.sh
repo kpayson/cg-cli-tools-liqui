@@ -164,12 +164,14 @@ if [[ -n "$INPUT_SERVICE_COMMAND" ]]; then
   exit 0
 fi
 
+if [[ -n "$INPUT_USER_SERVICE_COMMAND" ]]; then
+  echo "Running command: $INPUT_USER_SERVICE_COMMAND"
 
-# If they specified a full command, run it
-if [[ -n "$INPUT_COMMAND" ]]; then
-  echo "Running command: $INPUT_COMMAND"
-  eval $INPUT_COMMAND
-  exit
+  cf delete-service "${INPUT_USER_SERVICE_NAME}" -f
+
+  cf cups "${INPUT_USER_SERVICE_NAME}" -p "$(cat ${INPUT_USER_SERVICE_COMMAND})"
+  
+  exit 0
 fi
 
 # If they specified a cf CLI subcommand, run it
