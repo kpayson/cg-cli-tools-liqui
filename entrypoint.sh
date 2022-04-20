@@ -101,10 +101,10 @@ deploy_app_from_config() {
 	# If they specified a vars file, use it  
 	if [[ -r "$INPUT_CF_VARS_FILE" ]]; then 
 	  echo "Pushing with vars file: $INPUT_CF_VARS_FILE"
-	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start --vars-file "$INPUT_CF_VARS_FILE" -f ./${CONFIG_FILE_NAME}
+	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start --no-route --vars-file "$INPUT_CF_VARS_FILE" -f ./${CONFIG_FILE_NAME}
 	else 
 	  echo "Pushing with manifest file: $MANIFEST"
-	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start  -f ./${CONFIG_FILE_NAME}
+	  CF_DOCKER_PASSWORD=$INPUT_CF_DOCKER_PASSWORD cf push --no-start --no-route  -f ./${CONFIG_FILE_NAME}
 	fi
 	
 	local PACKAGE_GUID=$(cf packages $APP_NAME | awk -F " " 'NR==4 {print $1}') 
