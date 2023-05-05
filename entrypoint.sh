@@ -96,7 +96,7 @@ deploy_app_from_config() {
 	local CONFIG_FILE_NAME=$1
 	local APP_NAME=$(yq -o=json  ${INPUT_CF_VARS_FILE} | jq -r ".APP_NAME")
 	
-	eval $(parse_yaml "./$CONFIG_FILE_NAME" "flyway_config")
+	eval $(parse_yaml "./$CONFIG_FILE_NAME" "liquibase_config")
 
 	# If they specified a vars file, use it  
 	if [[ -r "$INPUT_CF_VARS_FILE" ]]; then 
@@ -113,8 +113,8 @@ deploy_app_from_config() {
 	cf set-droplet  $APP_NAME  $DROPLET_GUID
 }
 
-flyway_migrate() {
-  FLYWAY_DOCKER_COMMAND_JSON=$1
+liquibase_migrate() {
+  LIQUIBASE_DOCKER_COMMAND_JSON=$1
 
   local CF_APP=$(jq -r '.app_instance' <<< $1)
   local CF_SERVICE=$(jq -r '.service_instance' <<< $1)
@@ -122,19 +122,22 @@ flyway_migrate() {
 
   cf install-plugin https://github.com/AlexF4Dev/cf-run-and-wait/releases/download/0.3/cf-run-and-wait_0.3_linux_amd64 -f
 
-  FLYWAY_ENTRY_COMMAND="sed -i 's/labshare/${INPUT_DATABASE_NAME:=labshare}/g' /flyway/conf/flyway.conf && "
-  FLYWAY_ENTRY_COMMAND+='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
-  FLYWAY_ENTRY_COMMAND+=$CF_SERVICE
-  FLYWAY_ENTRY_COMMAND+='\") | .credentials") && \
+  LIQUIBASE_ENTRY_COMMAND="sed -i 's/labshare/${INPUT_DATABASE_NAME:=labshare}/g' /liquibase/liquibase.properties && "
+  LIQUIBASE_ENTRY_COMMAND+='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
+  LIQUIBASE_ENTRY_COMMAND+=$CF_SERVICE
+  LIQUIBASE_ENTRY_COMMAND+='\") | .credentials") && \
 export DB_HOST=$(echo $credentials | jq -r ".host") && \
 export DB_DATABASE_NAME=$(echo $credentials | jq -r ".db_name") && \
 export DB_USER=$(echo $credentials | jq -r ".username") && \
 export DB_PASSWORD=$(echo $credentials | jq -r ".password") && \
 export DB_PORT=$(echo $credentials | jq -r ".port") && \
-flyway -url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE_NAME} -user=${DB_USER} -password=${DB_PASSWORD} -baselineOnMigrate=true migrate'
-  cf run-and-wait $CF_APP   "$FLYWAY_ENTRY_COMMAND"
+liquibase --url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE_NAME} --username=${DB_USER} --password=${DB_PASSWORD} update'
+  cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
 
 }
+
+#command: bash /liquibase/wait_for_db.sh liquibase --url="jdbc:mariadb://auth_db_local/labshare" --changeLogFile="./changelog/changelog.xml" --username=root --password='' update
+
 
 CF_API=${INPUT_CF_API:-api.fr.cloud.gov}
 # Authenticate and target CF org and space.
@@ -142,10 +145,10 @@ cf api "$CF_API"
 cf auth "$INPUT_CF_USERNAME" "$INPUT_CF_PASSWORD"
 cf target -o "$INPUT_CF_ORG" -s "$INPUT_CF_SPACE"
 
-if [[ -n "$INPUT_FLYWAY_DOCKER_COMMAND" ]]; then
-  echo "Running command: $INPUT_FLYWAY_DOCKER_COMMAND"
+if [[ -n "$INPUT_LIQUIBASE_DOCKER_COMMAND" ]]; then
+  echo "Running command: $INPUT_LIQUIBASE_DOCKER_COMMAND"
   
-  flyway_migrate "$INPUT_FLYWAY_DOCKER_COMMAND"
+  liquibase_migrate "$INPUT_LIQUIBASE_DOCKER_COMMAND"
   
   exit 0
 fi
