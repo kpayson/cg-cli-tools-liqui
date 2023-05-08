@@ -31,8 +31,8 @@ inputs:
   command:
     description: "Command to run. Mutually exclusive with other commands"
     required: false
-  flyway_docker_command:
-    description: "Runs flyway by using already deployed app (deploy_app_from_config_command).  Mutually exclusive with other commands"
+  liquibase_docker_command:
+    description: "Runs liquibase by using already deployed app (deploy_app_from_config_command).  Mutually exclusive with other commands"
     required: false
   deploy_app_from_config_command:
     description: "Deploys app in stopped state. The app could be used to run jobs. Mutually exclusive with other commands"
@@ -47,7 +47,7 @@ inputs:
     description: "Name of the users service"
     required: false    
   database_name: 
-    description: "Database to be used by flyway job"
+    description: "Database to be used by liquibase job"
     required: false
 runs:
   using: "docker"
