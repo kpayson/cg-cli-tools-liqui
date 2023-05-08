@@ -131,13 +131,10 @@ export DB_DATABASE_NAME=$(echo $credentials | jq -r ".db_name") && \
 export DB_USER=$(echo $credentials | jq -r ".username") && \
 export DB_PASSWORD=$(echo $credentials | jq -r ".password") && \
 export DB_PORT=$(echo $credentials | jq -r ".port") && \
-liquibase --url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE_NAME} --username=${DB_USER} --password=${DB_PASSWORD} update'
+liquibase --url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE_NAME} --username=${DB_USER} --password=${DB_PASSWORD} --changeLogFile="./changelog/changelog.xml" update'
   cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
 
 }
-
-#command: bash /liquibase/wait_for_db.sh liquibase --url="jdbc:mariadb://auth_db_local/labshare" --changeLogFile="./changelog/changelog.xml" --username=root --password='' update
-
 
 CF_API=${INPUT_CF_API:-api.fr.cloud.gov}
 # Authenticate and target CF org and space.
