@@ -132,7 +132,7 @@ export DB_USER=$(echo $credentials | jq -r ".username") && \
 export DB_PASSWORD=$(echo $credentials | jq -r ".password") && \
 export DB_PORT=$(echo $credentials | jq -r ".port") && \
 ls /liquibase/changelog && \
-echo INPUT_DATABASE_NAME=$INPUT_DATABASE_NAME
+echo INPUT_DATABASE_NAME=$INPUT_DATABASE_NAME && \
   cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
 
 }
