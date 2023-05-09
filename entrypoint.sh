@@ -130,12 +130,13 @@ export DB_HOST=$(echo $credentials | jq -r ".host") && \
 export DB_DATABASE_NAME=$(echo $credentials | jq -r ".db_name") && \
 export DB_USER=$(echo $credentials | jq -r ".username") && \
 export DB_PASSWORD=$(echo $credentials | jq -r ".password") && \
-export DB_PORT=$(echo $credentials | jq -r ".port")'
+export DB_PORT=$(echo $credentials | jq -r ".port") && \
+liquibase --url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${INPUT_DATABASE_NAME} --username=${DB_USER} --password=${DB_PASSWORD} --changeLogFile="/liquibase/changelog/changelog.xml" update'
 
 ls /liquibase/changelog
 echo INPUT_DATABASE_NAME=$INPUT_DATABASE_NAME
 echo LIQUIBASE_ENTRY_COMMAND=$LIQUIBASE_ENTRY_COMMAND
-  cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
+cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
 
 }
 
