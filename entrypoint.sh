@@ -122,7 +122,7 @@ liquibase_migrate() {
 
   cf install-plugin https://github.com/AlexF4Dev/cf-run-and-wait/releases/download/0.3/cf-run-and-wait_0.3_linux_amd64 -f
 
-  LIQUIBASE_ENTRY_COMMAND="sed -i 's/labshare/${INPUT_DATABASE_NAME:=labshare}-test1/g' /liquibase/liquibase.properties && "
+  LIQUIBASE_ENTRY_COMMAND="sed -i 's/labshare/${INPUT_DATABASE_NAME:=labshare}/g' /liquibase/liquibase.properties && "
   LIQUIBASE_ENTRY_COMMAND+='credentials=$(echo "$VCAP_SERVICES" | jq ".[] | .[] | select(.instance_name==\"'
   LIQUIBASE_ENTRY_COMMAND+=$CF_SERVICE
   LIQUIBASE_ENTRY_COMMAND+='\") | .credentials") && \
@@ -138,7 +138,6 @@ LIQUIBASE_ENTRY_COMMAND+='_liqui1?createDatabaseIfNotExist=true --username=${DB_
 
 echo INPUT_DATABASE_NAME=$INPUT_DATABASE_NAME
 echo LIQUIBASE_ENTRY_COMMAND=$LIQUIBASE_ENTRY_COMMAND
-eval "echo evaluated_command=$LIQUIBASE_ENTRY_COMMAND"
 cf run-and-wait $CF_APP   "$LIQUIBASE_ENTRY_COMMAND"
 
 }
