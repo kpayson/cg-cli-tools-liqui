@@ -134,7 +134,7 @@ export DB_PORT=$(echo $credentials | jq -r ".port") && \
 liquibase --url=jdbc:mysql://${DB_HOST}:${DB_PORT}/'
 
 LIQUIBASE_ENTRY_COMMAND+=${INPUT_DATABASE_NAME}
-LIQUIBASE_ENTRY_COMMAND+='createDatabaseIfNotExist=true --username=${DB_USER} --password=${DB_PASSWORD} --changeLogFile="/liquibase/changelog/changelog.xml" update'
+LIQUIBASE_ENTRY_COMMAND+='?createDatabaseIfNotExist=true --username=${DB_USER} --password=${DB_PASSWORD} --changeLogFile="/liquibase/changelog/changelog.xml" update'
 
 echo INPUT_DATABASE_NAME=$INPUT_DATABASE_NAME
 echo LIQUIBASE_ENTRY_COMMAND=$LIQUIBASE_ENTRY_COMMAND
